@@ -8,21 +8,22 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Data.Html;
 
-// The Item Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
+// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
 namespace JGMSoftware
 {
     /// <summary>
-    /// A page that displays details for a single item within a group while allowing gestures to
-    /// flip through other items belonging to the same group.
+    /// A basic page that provides characteristics common to most applications.
     /// </summary>
-    public sealed partial class ArticlePage : JGMSoftware.Common.LayoutAwarePage
+    public sealed partial class Article2 : JGMSoftware.Common.LayoutAwarePage
     {
-        public ArticlePage()
+        public Article2()
         {
             this.InitializeComponent();
         }
@@ -38,18 +39,9 @@ namespace JGMSoftware
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            // TODO: Assign a bindable group to this.DefaultViewModel["Group"]
-            // TODO: Assign a collection of bindable items to this.DefaultViewModel["Items"]
-            string articleTitle = (string)navigationParameter;
-            FeedData feed = FeedDataSource.GetFeed("JGM Software");
-            var article = FeedDataSource.GetItem(articleTitle);
-            if (article != null)
-            {
-                this.flipView.ItemsSource = feed.Items;
-                this.flipView.SelectedItem = article;
-            }
+            LoadArticle((string)navigationParameter);          
         }
-
+         
         /// <summary>
         /// Preserves state associated with this page in case the application is suspended or the
         /// page is discarded from the navigation cache.  Values must conform to the serialization
@@ -58,9 +50,17 @@ namespace JGMSoftware
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
-            var selectedItem = this.flipView.SelectedItem;
-            // TODO: Derive a serializable navigation parameter and assign it to pageState["SelectedItem"]
         }
 
+        private void LoadArticle(String articleTitle)
+        {
+            pageTitle.Text = articleTitle;
+            var article = FeedDataSource.GetItem(articleTitle);
+            String articlecontent = article.Content;
+            var bounds = Window.Current.Bounds;
+            Double size = bounds.Height - 200;
+            string content = WebContentHelper.WrapHtml(articlecontent, 1.0, size);
+            webView.NavigateToString(content);
+        }
     }
 }

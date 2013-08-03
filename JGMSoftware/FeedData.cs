@@ -125,7 +125,7 @@ namespace JGMSoftware
                                 feedItem.Link = item.Links[0].Uri;
                             }
                         }
-                        Uri source = new Uri("http://www.jgmsoftware.co.uk/wp-content/uploads/2012/12/genericFeatured.png");
+                        Uri source = new Uri("http://www.jgmsoftware.co.uk/wp-content/uploads/2012/07/Nexus7Featured.png");
                         feedItem.Thumbnail = new BitmapImage(source); 
                         feedData.Items.Add(feedItem);
                     }

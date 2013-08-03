@@ -56,10 +56,11 @@ namespace JGMSoftware
 
             if (e.ClickedItem != null)
             {
-                //string title = ((FeedData)e.ClickedItem).Title;
-                this.Frame.Navigate(typeof(ArticlePage));
+                string title = ((FeedItem)e.ClickedItem).Title;
+                this.Frame.Navigate(typeof(Article2), title);
             }
         }
+
 
     }
 }

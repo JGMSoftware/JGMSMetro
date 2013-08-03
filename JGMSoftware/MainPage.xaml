@@ -59,7 +59,10 @@
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             ItemTemplate="{StaticResource Standard80ItemTemplate}"
             SelectionMode="None"
-            IsSwipeEnabled="false"/>
+            IsSwipeEnabled="false" 
+            IsItemClickEnabled="True"
+            ItemClick="itemGridView_ItemClick"
+            />
 
         <!-- Back button and page title -->
         <Grid>

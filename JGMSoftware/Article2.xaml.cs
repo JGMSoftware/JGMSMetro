@@ -54,12 +54,19 @@ namespace JGMSoftware
 
         private void LoadArticle(String articleTitle)
         {
+            //Set the page title to the article title passed into the page, which is also the navigation parameter.
             pageTitle.Text = articleTitle;
+            //Retrieve the article from the downloaded list of feed items (articles)
             var article = FeedDataSource.GetItem(articleTitle);
+            //Set the article text to the content from this item
             String articlecontent = article.Content;
+            //Get the screen size to set the correct sizes for the WebView
             var bounds = Window.Current.Bounds;
+            //Minus a margin
             Double size = bounds.Height - 200;
+            //Format the content string with some CSS and markup using the WebContentHelper class
             string content = WebContentHelper.WrapHtml(articlecontent, 1.0, size);
+            //Display the article content
             webView.NavigateToString(content);
         }
     }

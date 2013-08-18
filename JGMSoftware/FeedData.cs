@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Syndication;
@@ -37,7 +39,7 @@ namespace JGMSoftware
         public string Content { get; set; }
         public DateTime PubDate { get; set; }
         public Uri Link { get; set; }
-        //I added this
+        //Thumbnail is the image shown on the tile on the main page
         public BitmapImage Thumbnail { get; set; }
     }
 
@@ -87,12 +89,14 @@ namespace JGMSoftware
                     // Use the date of the latest post as the last updated date.
                     feedData.PubDate = feed.Items[0].PublishedDate.DateTime;
 
+                    //For every article in the feed
                     foreach (SyndicationItem item in feed.Items)
                     {
                         FeedItem feedItem = new FeedItem();
                         if (item.Title != null && item.Title.Text != null)
                         {
                             feedItem.Title = item.Title.Text;
+                            //System.Diagnostics.Debug.WriteLine("FOUND ARTICLE " + item.Title.Text);
                         }
                         if (item.PublishedDate != null)
                         {
@@ -125,9 +129,36 @@ namespace JGMSoftware
                                 feedItem.Link = item.Links[0].Uri;
                             }
                         }
-                        Uri source = new Uri("http://www.jgmsoftware.co.uk/wp-content/uploads/2012/07/Nexus7Featured.png");
-                        feedItem.Thumbnail = new BitmapImage(source); 
+
+                        //For each article, generate a list of all the image URLs in the content.
+                        List<Uri> links = new List<Uri>();
+                        string regexImgSrc = @"<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>";
+                        MatchCollection matchesImgSrc = Regex.Matches(feedItem.Content, regexImgSrc, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                        foreach (Match m in matchesImgSrc)
+                        {
+                            string href = m.Groups[1].Value;
+                            links.Add(new Uri(href));
+
+                        }
+
+                        //Set the tile image to a default image
+                        Uri img = new Uri("http://jgmsoftware.azurewebsites.net/wp-content/uploads/2013/05/cropped-cropped-JGMSoftware125.png");
+
+                        if (links.Count != 0)
+                        {
+                            //If the article has any images, set the tile image to the first one.
+                            img = links.ElementAt(0);
+                        }
+
+                        //System.Diagnostics.Debug.WriteLine(feedItem.Title + ": " + img);
+                        feedItem.Thumbnail = new BitmapImage(img);
+                        //System.Diagnostics.Debug.WriteLine("--Successfully set image " + img + " as image for " + feedItem.Title);
                         feedData.Items.Add(feedItem);
+                        //System.Diagnostics.Debug.WriteLine("--Successfully added this article to the collection\n");
+
+
+
+
                     }
                 }
                 return feedData;
@@ -138,15 +169,23 @@ namespace JGMSoftware
             }
         }
 
+
         // Returns the feed that has the specified title.
         public static FeedData GetFeed(string title)
         {
             // Simple linear search is acceptable for small data sets
             var _feedDataSource = App.Current.Resources["feedDataSource"] as FeedDataSource;
 
-            var matches = _feedDataSource.Feeds.Where((feed) => feed.Title.Equals(title));
+            var matches = _feedDataSource.Feeds.Where((feed) => feed.Title.Equals("JGM Software"));
+
             if (matches.Count() == 1) return matches.First();
             return null;
+
+            // Simple linear search is acceptable for small data sets
+            //var _feedDataSource = App.Current.Resources["feedDataSource"] as FeedDataSource;
+            //var matches = _feedDataSource.Feeds.Where((feed) => feed.Title.Equals("JGM Software"));
+            //if (matches.Count() == 1) return matches.First();
+            //return null;
         }
 
         // Returns the post that has the specified title.

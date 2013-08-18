@@ -16,6 +16,8 @@ using Windows.Web.Syndication;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
+//THIS IS THE PAGE THAT DISPLAYS TILES FOR EACH ARTICLE PRESENT IN THE JGMS FEED
+
 namespace JGMSoftware
 {
     /// <summary>
@@ -42,6 +44,7 @@ namespace JGMSoftware
         {
             // TODO: Assign a bindable collection of items to this.DefaultViewModel["Items"]
             FeedData feedData = FeedDataSource.GetFeed("JGM Software");
+            System.Diagnostics.Debug.WriteLine("Retrieved the feed JGM Software");
             if (feedData != null)
             {
                 this.DefaultViewModel["Feed"] = feedData;

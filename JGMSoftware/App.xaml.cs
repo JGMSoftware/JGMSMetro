@@ -65,7 +65,7 @@ namespace JGMSoftware
                 }
                 else
                 {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog("An internet connection is needed to download feeds. Please check your connection and restart the app.");
+                    var messageDialog = new Windows.UI.Popups.MessageDialog("An internet connection is needed to download the feed articles. Please check your connection and restart the app.");
                     var result = messageDialog.ShowAsync();
                 }
 

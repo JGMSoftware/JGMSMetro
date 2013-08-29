@@ -49,6 +49,7 @@ namespace JGMSoftware
             {
                 this.DefaultViewModel["Feed"] = feedData;
                 this.DefaultViewModel["Items"] = feedData.Items;
+
             }
         }
 
